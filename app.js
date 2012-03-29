@@ -39,13 +39,19 @@ restclient = {
 			if (req.body.uri_method == 'get') {
 		    	rc.restler.json(req.body.uri, {}, options).
 		    		on('complete', function(data, response) {
+    				try {
+    					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
+    				}
+    				catch (e) {
+    					responseText = response.rawEncoded;
+    				}		    			
 				        res.render('index', {
 				          	title: 'Rest Client Post',
 				          	content: 'Rest Client Post',
 				          	uri: req.body.uri,
 				          	content: req.body.content,
 				          	header: req.body.header,
-				          	response: JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2),
+				          	response: responseText,
 				          	statusCode: response.statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
@@ -89,7 +95,6 @@ restclient = {
 	    			console.log('not json in body sent to PUT');
 	    			//options.data = '';
 	    		}
-	    		console.log(options);
 		    	rc.restler.put(req.body.uri, options).
 	    		on('complete', function(data, response) {
     				var responseText = '';
