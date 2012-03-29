@@ -7,6 +7,11 @@ a {
   color: #00B7FF;
 }
 
+#outputBody {
+	height: 600px;
+	overflow-y: scroll;
+}
+
 #outputBody, #outputStatusCode {
 	border: 1px solid #333;
 	padding: 3px;

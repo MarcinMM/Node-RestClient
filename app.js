@@ -62,26 +62,29 @@ restclient = {
 	    		var parsedInput;
 	    		try {
 	    			parsedInput = JSON.parse(req.body.content);
+	    		} catch (e) {
+	    			parsedInput = {};
+	    		}
 			    	rc.restler.postJson(req.body.uri, parsedInput, options).
 		    		on('complete', function(data, response) {
+		    			try {
+							responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2);
+		    			} catch (e) {
+		    				responseText = response.rawEncoded;
+		    			}
 				        res.render('index', {
 				          	title: 'Rest Client Post',
 				          	content: 'Rest Client Post',
 				          	uri: req.body.uri,
 				          	content: req.body.content,
 				          	header: req.body.header,
-				          	response: JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2), 
+				          	response: responseText, 
 				          	statusCode: response.statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
 				          	uri_method: req.body.uri_method
 				        });
 					});
-		    	}
-		    	catch (e)
-		    	{
-		    		console.log('not json');
-		    	}
 			} else if (req.body.uri_method == 'put' && (req.body.content.length > 0)) {
 	    		var parsedInput;
 	    		try {
