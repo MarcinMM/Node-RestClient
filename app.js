@@ -76,6 +76,42 @@ restclient = {
 		    	{
 		    		console.log('not json');
 		    	}
+			} else if (req.body.uri_method == 'put' && (req.body.content.length > 0)) {
+	    		var parsedInput;
+	    		try {
+	    			// for some mysterious reasons this data doesn't need to be a JSON object
+	    			// but we'll parse anyway so we can have an easy out in case data isn't JSON-format
+	    			JSON.parse(req.body.content);
+	    			options.data = req.body.content;
+	    		}
+	    		catch (e)
+	    		{
+	    			console.log('not json in body sent to PUT');
+	    			//options.data = '';
+	    		}
+	    		console.log(options);
+		    	rc.restler.put(req.body.uri, options).
+	    		on('complete', function(data, response) {
+    				var responseText = '';
+    				try {
+    					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
+    				}
+    				catch (e) {
+    					responseText = response.rawEncoded;
+    				}
+			        res.render('index', {
+			          	title: 'Rest Client Post',
+			          	content: 'Rest Client Post',
+			          	uri: req.body.uri,
+			          	content: req.body.content,
+			          	header: req.body.header,
+			          	response: responseText, 
+			          	statusCode: response.statusCode,
+			          	username: req.body.username,
+			          	password: req.body.password,
+			          	uri_method: req.body.uri_method
+			        });
+				});
 			}
     	});
 
