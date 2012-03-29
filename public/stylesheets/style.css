@@ -6,3 +6,8 @@ body {
 a {
   color: #00B7FF;
 }
+
+#outputBody, #outputStatusCode {
+	border: 1px solid #333;
+	padding: 3px;
+}

@@ -1,2 +1,29 @@
 h1= title
 p Welcome to #{title}
+	#entryForm
+		form(action='/', method='POST')
+			p Method:
+				select(name='uri_method')
+					option(value="get", selected=(uri_method == 'get')) Get
+					option(value="post", selected=(uri_method == 'post')) Post
+					option(value="put", selected=(uri_method == 'put')) Put
+					option(value="delete", selected=(uri_method == 'delete')) Delete
+			p URI:
+				input(name='uri', id='uri', type='text', size='100', value=uri)
+			p Username:
+				input(name='username', id='username', type='text', size='100', value=username)
+			p Password:
+				input(name='password', id='password', type='text', size='100', value=password)
+
+			- for (var key in header)
+				p= Header
+					input(name=header[key], id='header'+key, type='text', size='100', value=header[key])
+			p Body: 
+				textarea(name='content', id='content', cols=80, rows=10)= content
+			p Submit 
+				input(type='submit', value='Pony Express!')
+	#outputStatusCode Status Code: 
+		= statusCode
+	#outputBody
+		pre
+			= response
