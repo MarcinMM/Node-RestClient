@@ -1,0 +1,16 @@
+If brew, and you have old node (currently node should be between .6 and .7):
+brew remove node
+brew install node
+
+If not:
+https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager
+
+Then:
+curl http://npmjs.org/install.sh | sh
+
+verify both:
+node -v
+npm -v
+
+Then cd /restclient.
+npm install -d
