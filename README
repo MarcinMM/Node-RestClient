@@ -14,3 +14,8 @@ npm -v
 
 Then cd /restclient.
 npm install -d
+
+once installed:
+node app.js
+
+then hit 127.0.0.1:3000 
