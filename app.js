@@ -43,7 +43,13 @@ restclient = {
     					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
     				}
     				catch (e) {
-    					responseText = response.rawEncoded;
+	    				if (response) {
+	    					responseText = response.rawEncoded;
+	    					statusCode = response.statusCode;
+	    				} else {
+	    					responseText = e;
+	    					statusCode = 666;
+	    				}
     				}		    			
 				        res.render('index', {
 				          	title: 'Rest Client Post',
@@ -52,7 +58,7 @@ restclient = {
 				          	content: req.body.content,
 				          	header: req.body.header,
 				          	response: responseText,
-				          	statusCode: response.statusCode,
+				          	statusCode: statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
 				          	uri_method: req.body.uri_method
@@ -70,7 +76,13 @@ restclient = {
 		    			try {
 							responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2);
 		    			} catch (e) {
-		    				responseText = response.rawEncoded;
+		    				if (response) {
+		    					responseText = response.rawEncoded;
+		    					statusCode = response.statusCode;
+		    				} else {
+		    					responseText = e;
+		    					statusCode = 666;
+		    				}
 		    			}
 				        res.render('index', {
 				          	title: 'Rest Client Post',
@@ -79,7 +91,7 @@ restclient = {
 				          	content: req.body.content,
 				          	header: req.body.header,
 				          	response: responseText, 
-				          	statusCode: response.statusCode,
+				          	statusCode: statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
 				          	uri_method: req.body.uri_method
@@ -100,6 +112,29 @@ restclient = {
 	    		}
 		    	rc.restler.put(req.body.uri, options).
 	    		on('complete', function(data, response) {
+    				var responseText = '';
+    				try {
+    					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
+    				}
+    				catch (e) {
+    					responseText = response.rawEncoded;
+    				}
+			        res.render('index', {
+			          	title: 'Rest Client Post',
+			          	content: 'Rest Client Post',
+			          	uri: req.body.uri,
+			          	content: req.body.content,
+			          	header: req.body.header,
+			          	response: responseText, 
+			          	statusCode: response.statusCode,
+			          	username: req.body.username,
+			          	password: req.body.password,
+			          	uri_method: req.body.uri_method
+			        });
+				});
+			} else if (req.body.uri_method == 'delete') {
+				rc.restler.del(req.body.uri, options).
+				on('complete', function(data, response) {
     				var responseText = '';
     				try {
     					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
