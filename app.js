@@ -72,11 +72,17 @@ restclient = {
 	    		var parsedInput;
 	    		// tunnel PATCH through POST with _method=patch tacked on to URI
 	    		var uri = (req.body.uri_method == 'patch') ? req.body.uri + '&_method=patch' : req.body.uri;
-	    		try {
-	    			parsedInput = JSON.parse(req.body.content);
-	    		} catch (e) {
-	    			parsedInput = {};
-	    		}
+	    		if (req.body.content_type == 'application/json') {
+		    		try {
+		    			parsedInput = JSON.parse(req.body.content);
+		    		} catch (e) {
+		    			parsedInput = {};
+		    		}
+		    	}
+		    	else {
+		    		// non JSON input in body
+		    		parsedInput = req.body.content;
+		    	}
 			    	rc.restler.postJson(uri, parsedInput, options).
 		    		on('complete', function(data, response) {
 		    			try {
@@ -107,17 +113,24 @@ restclient = {
 					});
 			} else if (req.body.uri_method == 'put' && (req.body.content.length > 0)) {
 	    		var parsedInput;
-	    		try {
-	    			// for some mysterious reasons this data doesn't need to be a JSON object
-	    			// but we'll parse anyway so we can have an easy out in case data isn't JSON-format
-	    			JSON.parse(req.body.content);
-	    			options.data = req.body.content;
-	    		}
-	    		catch (e)
-	    		{
-	    			console.log('not json in body sent to PUT');
-	    			//options.data = '';
-	    		}
+
+	    		if (req.body.content_type == 'application/json') {
+		    		try {
+		    			// for some mysterious reasons this data doesn't need to be a JSON object
+		    			// but we'll parse anyway so we can have an easy out in case data isn't JSON-format
+		    			JSON.parse(req.body.content);
+		    			options.data = req.body.content;
+		    		}
+		    		catch (e)
+		    		{
+		    			console.log('not json in body sent to PUT');
+		    			//options.data = '';
+		    		}
+		    	}
+		    	else {
+		    		// non JSON body
+		    		options.data = req.body.content;
+		    	}
 		    	rc.restler.put(req.body.uri, options).
 	    		on('complete', function(data, response) {
     				var responseText = '';
