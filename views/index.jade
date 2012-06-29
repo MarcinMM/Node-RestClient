@@ -7,9 +7,15 @@ p HAI 2 U
 					option(value="get", selected=(uri_method == 'get')) Get
 					option(value="post", selected=(uri_method == 'post')) Post
 					option(value="put", selected=(uri_method == 'put')) Put
+					option(value="patch", selected=(uri_method == 'patch')) Patch
 					option(value="delete", selected=(uri_method == 'delete')) Delete
+			p Content type:
+				select(name='content_type')
+					option(value='application/json', selected=(content_type == 'application/json')) JSON
+					option(value='text/xml', selected=(content_type == 'text/xml')) XML
+					option(value='text/csv', selected=(content_type == 'text/csv')) CSV
 			p URI:
-				input(name='uri', id='uri', type='text', size='100', value=uri)
+				input(name='uri', id='uri', type='text', size='200', value=uri)
 			p Username:
 				input(name='username', id='username', type='text', size='100', value=username)
 			p Password:

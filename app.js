@@ -31,18 +31,21 @@ restclient = {
 
 	    rc.app.post('/', function(req, res) {
 	    	var options = {
-	    		parser: rc.restler.parsers.json,
+	    		parser: rc.restler.parsers.json, // TODO XML parser as requested. not particularly urgent.
 	    		username: req.body.username, 
-	    		password: req.body.password
+	    		password: req.body.password,
+	    		headers: { 'Content-Type': req.body.content_type, 'Accept': '*/*' }
 			};
 			
 			if (req.body.uri_method == 'get') {
 		    	rc.restler.json(req.body.uri, {}, options).
 		    		on('complete', function(data, response) {
     				try {
-    					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
+    					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2);
+    					statusCode = response.statusCode;
     				}
     				catch (e) {
+    					console.log(e);
 	    				if (response) {
 	    					responseText = response.rawEncoded;
 	    					statusCode = response.statusCode;
@@ -61,20 +64,24 @@ restclient = {
 				          	statusCode: statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
-				          	uri_method: req.body.uri_method
+				          	uri_method: req.body.uri_method,
+				          	content_type: req.body.content_type
 				        });
 					});
-	    	} else if (req.body.uri_method == 'post' && (req.body.content.length > 0)) {
+	    	} else if (((req.body.uri_method == 'post') || (req.body.uri_method == 'patch')) && (req.body.content.length > 0)) {
 	    		var parsedInput;
+	    		// tunnel PATCH through POST with _method=patch tacked on to URI
+	    		var uri = (req.body.uri_method == 'patch') ? req.body.uri + '&_method=patch' : req.body.uri;
 	    		try {
 	    			parsedInput = JSON.parse(req.body.content);
 	    		} catch (e) {
 	    			parsedInput = {};
 	    		}
-			    	rc.restler.postJson(req.body.uri, parsedInput, options).
+			    	rc.restler.postJson(uri, parsedInput, options).
 		    		on('complete', function(data, response) {
 		    			try {
 							responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2);
+							statusCode = response.statusCode;
 		    			} catch (e) {
 		    				if (response) {
 		    					responseText = response.rawEncoded;
@@ -94,7 +101,8 @@ restclient = {
 				          	statusCode: statusCode,
 				          	username: req.body.username,
 				          	password: req.body.password,
-				          	uri_method: req.body.uri_method
+				          	uri_method: req.body.uri_method,
+				          	content_type: req.body.content_type
 				        });
 					});
 			} else if (req.body.uri_method == 'put' && (req.body.content.length > 0)) {
@@ -129,7 +137,8 @@ restclient = {
 			          	statusCode: response.statusCode,
 			          	username: req.body.username,
 			          	password: req.body.password,
-			          	uri_method: req.body.uri_method
+			          	uri_method: req.body.uri_method,
+			          	content_type: req.body.content_type
 			        });
 				});
 			} else if (req.body.uri_method == 'delete') {
@@ -152,7 +161,8 @@ restclient = {
 			          	statusCode: response.statusCode,
 			          	username: req.body.username,
 			          	password: req.body.password,
-			          	uri_method: req.body.uri_method
+			          	uri_method: req.body.uri_method,
+			          	content_type: req.body.content_type
 			        });
 				});
 			}
@@ -169,7 +179,8 @@ restclient = {
 	          	statusCode: '',
 	          	username: '',
 	          	password: '',
-	          	uri_method: 'get'
+	          	uri_method: 'get',
+	          	content_type: 'application/json'
 	        });
 	    });
 	},
