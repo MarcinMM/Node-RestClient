@@ -69,21 +69,20 @@ restclient = {
 				        });
 					});
 	    	} else if (((req.body.uri_method == 'post') || (req.body.uri_method == 'patch')) && (req.body.content.length > 0)) {
-	    		var parsedInput;
 	    		// tunnel PATCH through POST with _method=patch tacked on to URI
 	    		var uri = (req.body.uri_method == 'patch') ? req.body.uri + '&_method=patch' : req.body.uri;
 	    		if (req.body.content_type == 'application/json') {
 		    		try {
-		    			parsedInput = JSON.parse(req.body.content);
+		    			options.data = JSON.parse(req.body.content);
 		    		} catch (e) {
-		    			parsedInput = {};
+		    			options.data = {};
 		    		}
 		    	}
 		    	else {
 		    		// non JSON input in body
-		    		parsedInput = req.body.content;
+		    		options.data = req.body.content;
 		    	}
-			    	rc.restler.postJson(uri, parsedInput, options).
+			    	rc.restler.post(uri, options).
 		    		on('complete', function(data, response) {
 		    			try {
 							responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2);
@@ -101,7 +100,7 @@ restclient = {
 				          	title: 'Rest Client Post',
 				          	content: 'Rest Client Post',
 				          	uri: req.body.uri,
-				          	content: req.body.content,
+				          	content: options.data,
 				          	header: req.body.header,
 				          	response: responseText, 
 				          	statusCode: statusCode,
@@ -123,7 +122,6 @@ restclient = {
 		    		}
 		    		catch (e)
 		    		{
-		    			console.log('not json in body sent to PUT');
 		    			//options.data = '';
 		    		}
 		    	}
@@ -138,7 +136,13 @@ restclient = {
     					responseText = JSON.stringify(JSON.parse(response.rawEncoded), undefined, 2); 
     				}
     				catch (e) {
-    					responseText = response.rawEncoded;
+    					if (response) {
+	    					responseText = response.rawEncoded;
+	    					statusCode = response.statusCode;
+	    				} else {
+	    					responseText = e;
+	    					statusCode = 666;
+	    				}
     				}
 			        res.render('index', {
 			          	title: 'Rest Client Post',
