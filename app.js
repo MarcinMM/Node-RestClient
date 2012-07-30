@@ -98,9 +98,8 @@ restclient = {
 		    			}
 				        res.render('index', {
 				          	title: 'Rest Client Post',
-				          	content: 'Rest Client Post',
 				          	uri: req.body.uri,
-				          	content: options.data,
+				          	content: req.body.content,
 				          	header: req.body.header,
 				          	response: responseText, 
 				          	statusCode: statusCode,
@@ -146,7 +145,6 @@ restclient = {
     				}
 			        res.render('index', {
 			          	title: 'Rest Client Post',
-			          	content: 'Rest Client Post',
 			          	uri: req.body.uri,
 			          	content: req.body.content,
 			          	header: req.body.header,
@@ -170,7 +168,6 @@ restclient = {
     				}
 			        res.render('index', {
 			          	title: 'Rest Client Post',
-			          	content: 'Rest Client Post',
 			          	uri: req.body.uri,
 			          	content: req.body.content,
 			          	header: req.body.header,
